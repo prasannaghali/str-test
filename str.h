@@ -10,6 +10,7 @@ Implemented to understand the work-flow of GitHub ...
 #include <cstring>	// for strlen, strcpy, strcat
 #include <cstdlib> // for size_t
 #include <initializer_list>
+#include <algorithm> // for std::swap
 
 #if defined(STR_DEBUG)
 
@@ -39,15 +40,19 @@ public:
 public:
 	Str();
 	Str(char const*);
+	Str(char const*, size_type n); // copies the first n character from buffer
 	Str(Str const&);
 	Str(std::initializer_list<char>);
+	Str(Str&&);
 	~Str();
 	
 	Str& operator=(char const*);
 	Str& operator=(Str const&);
+	Str& operator=(Str&&);
 	
 	Str& operator+=(char const*);
 	Str& operator+=(Str const&);
+	Str& operator+=(std::initializer_list<char>);
 	
 	const_reference operator[](size_type) const;
 	reference operator[](size_type);
@@ -63,6 +68,7 @@ public:
 	const_iterator cend() const { return ptr+len; }
 	
 	size_type size() const { return len; }
+	size_type length() const { return len; }
 	bool empty() const { return len == 0; }
 	
 private:
@@ -72,9 +78,22 @@ private:
 
 std::ostream& operator<<(std::ostream&, Str const&);
 
+#if 0
 Str operator+(Str const&, Str const&);
+Str operator+(Str const&, Str&&);
+Str operator+(Str&&, Str const&);
+Str operator+(Str&&, Str&&);
 Str operator+(Str const&, char const*);
 Str operator+(char const*, Str const&);
+Str operator+(Str&&, char const*);
+Str operator+(char const*, Str&&);
+#else
+Str operator+(Str, Str const&);
+Str operator+(Str, char const*);
+Str operator+(char const*, Str const&);
+#endif
+
+
 
 
 #endif
